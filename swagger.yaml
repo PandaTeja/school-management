@@ -1,0 +1,407 @@
+openapi: 3.0.0
+info:
+  title: School Management API
+  description: API documentation for the School Management system.
+  version: 1.0.0
+paths:
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - role
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: "user@example.com"
+                password:
+                  type: string
+                  format: password
+                  example: "strongPassword123"
+                role:
+                  type: string
+                  enum: 
+                    - admin
+                    - user
+                    - superadmin
+                  example: "user"
+      responses:
+        '201':
+          description: User successfully registered
+        '400':
+          description: Bad request
+  /api/auth/login:
+    post:
+      summary: Login a user
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Successful login
+        400:
+          description: Bad request
+
+  /api/auth/profile:
+    get:
+      summary: Get user profile
+      operationId: getProfile
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: Successfully retrieved profile
+        401:
+          description: Unauthorized
+
+  /api/schools:
+    post:
+      summary: Create a new school
+      operationId: createSchool
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - address
+                - contactInfo
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                contactInfo:
+                  type: string
+      responses:
+        201:
+          description: School created successfully
+        400:
+          description: Bad request
+
+    get:
+      summary: Get all schools
+      operationId: getAllSchools
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: List of all schools
+        401:
+          description: Unauthorized
+
+  /api/schools/{schoolId}:
+    get:
+      summary: Get a specific school by ID
+      operationId: getSchoolById
+      parameters:
+        - in: path
+          name: schoolId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: School details
+        404:
+          description: School not found
+
+    put:
+      summary: Update a school
+      operationId: updateSchool
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: schoolId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                address:
+                  type: string
+                contactInfo:
+                  type: string
+      responses:
+        200:
+          description: School updated successfully
+        400:
+          description: Bad request
+        404:
+          description: School not found
+
+    delete:
+      summary: Delete a school
+      operationId: deleteSchool
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: schoolId
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: School deleted successfully
+        404:
+          description: School not found
+
+  /api/classrooms:
+    post:
+      summary: Create a new classroom
+      operationId: createClassroom
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - schoolId
+              properties:
+                name:
+                  type: string
+                schoolId:
+                  type: string
+      responses:
+        201:
+          description: Classroom created successfully
+        400:
+          description: Bad request
+
+    get:
+      summary: Get all classrooms
+      operationId: getAllClassrooms
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: List of all classrooms
+        401:
+          description: Unauthorized
+
+  /api/classrooms/{classroomId}:
+    get:
+      summary: Get a specific classroom by ID
+      operationId: getClassroomById
+      parameters:
+        - in: path
+          name: classroomId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Classroom details
+        404:
+          description: Classroom not found
+
+    put:
+      summary: Update a classroom
+      operationId: updateClassroom
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: classroomId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                schoolId:
+                  type: string
+      responses:
+        200:
+          description: Classroom updated successfully
+        400:
+          description: Bad request
+        404:
+          description: Classroom not found
+
+    delete:
+      summary: Delete a classroom
+      operationId: deleteClassroom
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: classroomId
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Classroom deleted successfully
+        404:
+          description: Classroom not found
+
+  /api/students:
+    post:
+      summary: Enroll a new student
+      operationId: enrollStudent
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - classroomId
+              properties:
+                name:
+                  type: string
+                classroomId:
+                  type: string
+      responses:
+        201:
+          description: Student enrolled successfully
+        400:
+          description: Bad request
+
+    get:
+      summary: Get all students
+      operationId: getAllStudents
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: List of all students
+        401:
+          description: Unauthorized
+
+  /api/students/{studentId}:
+    get:
+      summary: Get a specific student by ID
+      operationId: getStudentById
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Student details
+        404:
+          description: Student not found
+
+    put:
+      summary: Update student information
+      operationId: updateStudent
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                classroomId:
+                  type: string
+      responses:
+        200:
+          description: Student updated successfully
+        400:
+          description: Bad request
+        404:
+          description: Student not found
+
+    patch:
+      summary: Transfer student to another classroom
+      operationId: transferStudent
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Student transferred successfully
+        400:
+          description: Bad request
+        404:
+          description: Student not found
+
+    delete:
+      summary: Delete a student
+      operationId: deleteStudent
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: studentId
+          required: true
+          schema:
+            type: string
+      responses:
+        204:
+          description: Student deleted successfully
+        404:
+          description: Student not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
